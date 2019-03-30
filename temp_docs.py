@@ -193,6 +193,80 @@ def get_service():
     pass
 
 
+@app.route('/oauth/login', methods=['GET'])
+@swag_from({
+    'tags': ['OAuth'],
+    'description': '로그인 페이지 get',
+    'parameters': [
+        parameter('client_id', '앱의 client id', in_='query string'),
+        parameter('redirect_url', '로그인 이후 redirect할 url', in_='query string')
+    ],
+    'responses': {
+        '200': {'description': '성공'},
+        '409': {'description': '잘못된 앱 client id, redirect_url'},
+    }
+})
+def get_oauth_login_page():
+    pass
+
+
+@app.route('/oauth/token', methods=['POST'])
+@swag_from(
+    {
+        'tags': ['OAuth'],
+        'description': 'get access token using code',
+        'parameters': [
+            parameter('client_id', '앱의 client id'),
+            parameter('code', '인증으로 받게 된 code'),
+            parameter('secret_key', '앱의 secret key')
+        ],
+        'responses': {
+            '200': {
+                'description': 'get token 성공',
+                'examples': {
+                    '': {
+                        'access_token': '<Access Token>',
+                        'refresh_token': '<Refresh Token>',
+                        'expire_timestamp':'<Expire Timestamp>',
+                        'token_type': 'bearer'
+                    }
+                }
+            }
+        }
+    },
+)
+def get_token():
+    pass
+
+
+@app.route('/oauth/refresh', methods=['POST'])
+@swag_from(
+    {
+        'tags': ['OAuth'],
+        'description': 'refresh token 으로 access token 받기',
+        'parameters': [
+            parameter('client_id', '앱의 client id'),
+            parameter('refresh_token', 'refresh token'),
+            parameter('secret_key', '앱의 secret key')
+        ],
+        'responses': {
+            '200': {
+                'description': 'refresh 성공',
+                'examples': {
+                    '': {
+                        'access_token': '<Access Token>',
+                        'expire_timestamp': '<Expire Timestamp>',
+                        'token_type': 'bearer'
+                    }
+                }
+            }
+        }
+    },
+)
+def refresh_token():
+    pass
+
+
 if __name__ == '__main__':
 
     app.config['SWAGGER'] = {
@@ -208,3 +282,4 @@ if __name__ == '__main__':
         'basePath': '/',
     }
     Swagger().init_app(app=app)
+    app.run()
