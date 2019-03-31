@@ -22,7 +22,7 @@ JWT = parameter('Authorization', 'JWT Token', 'header')
     'tags': ['Account'],
     'description': '회원가입',
     'parameters': [
-        parameter('id', '아이디'),
+        parameter('username', '아이디'),
         parameter('password', '비밀번호'),
         parameter('email', '학교이메일')
     ],
