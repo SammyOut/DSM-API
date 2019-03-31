@@ -84,7 +84,7 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
-AUTH_USER_MODEL = 'oauth.Student'
+AUTH_USER_MODEL = 'oauth.StudentModel'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
