@@ -8,26 +8,31 @@ def signup(request):
     if request.method == 'POST':
         form = forms.SignupForm(request.POST)
         if form.is_valid():
-
-            user = get_user_model().objects.createuser(**form.cleaned_data)
+            data = form.cleaned_data
+            data['password'] = data['password1']
+            del data['password1']
+            del data['password2']
+            user = get_user_model().objects.create_user(**form.cleaned_data)
             login(request, user)
-            # return redirect()
+            return redirect()
     else:
         form = forms.SignupForm()
-    # return render()
+    return render(request, 'signup.html', {'form': form})
 
 
 def signin(request):
     if request.method == 'POST':
         form = forms.LoginForm(request.POST)
-        username = form.cleaned_data.get('username')
-        password = form.cleaned_data.get('password')
+        username = request.POST['username']
+        password = request.POST['password']
 
         user = authenticate(username=username, password=password)
         if user is not None:
+            print('success')
             login(request, user)
             # return redirect()
+        print('failed')
     else:
         form = forms.LoginForm
 
-    # return render()
+    return render(request, 'login.html', {'form': form})
