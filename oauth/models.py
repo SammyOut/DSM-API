@@ -29,6 +29,18 @@ class AppModel(models.Model):
         return f'{self.name}'
 
 
+class TokenModel(models.Model):
+    token = models.CharField(max_length=256, primary_key=True)
+    app = models.OneToOneField(AppModel, on_delete=models.CASCADE)
+    student = models.OneToOneField(StudentModel, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.app.name} {self.student.number}'
+
+    class Meta:
+        unique_together = (('app', 'student'), )
+
+
 class RefreshTokenModel(models.Model):
     refresh_token = models.CharField(max_length=256, primary_key=True)
     app = models.OneToOneField(AppModel, on_delete=models.CASCADE)
@@ -36,6 +48,9 @@ class RefreshTokenModel(models.Model):
 
     def __str__(self):
         return f'{self.app.name} {self.student.number}'
+
+    class Meta:
+        unique_together = (('app', 'student'), )
 
 
 class AccessTokenModel(models.Model):
