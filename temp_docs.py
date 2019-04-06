@@ -267,6 +267,33 @@ def refresh_token():
     pass
 
 
+@app.route('/info/user')
+@swag_from(
+    {
+        'tags': ['Info'],
+        'description': '유저 정보',
+        'parameters': [
+            parameter('Authorization', 'access token', in_='header')
+        ],
+        'responses': {
+            '200': {
+                'description': '성공',
+                'examples': {
+                    '': {
+                        'name': '인상민',
+                        'number': 3214,
+                        'uuid': '<own uuid>'
+                    }
+                }
+            },
+            '403': '잘못된 access token'
+        }
+    }
+)
+def get_user_info():
+    pass
+
+
 if __name__ == '__main__':
 
     app.config['SWAGGER'] = {

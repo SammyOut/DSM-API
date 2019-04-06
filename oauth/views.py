@@ -2,6 +2,7 @@ from datetime import datetime
 from json import loads
 from uuid import uuid4
 
+from django.http import HttpRequest
 from django.contrib.auth import login, authenticate, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
@@ -13,7 +14,7 @@ from . import forms
 from . import models
 
 
-def signup(request):
+def signup(request: HttpRequest):
     if request.method == POST:
         form = forms.SignupForm(request.POST)
         if form.is_valid():
@@ -29,7 +30,7 @@ def signup(request):
     return render(request, 'signup.html', {FORM: form})
 
 
-def signin(request):
+def signin(request: HttpRequest):
     if request.method == POST:
         form = forms.LoginForm(request.POST)
         username = request.POST[USERNAME]
@@ -45,7 +46,7 @@ def signin(request):
     return render(request, 'login.html', {FORM: form})
 
 
-def oauth_signin(request):
+def oauth_signin(request: HttpRequest):
     if request.method == POST:
         form = forms.LoginForm(request.POST)
         client_id = request.POST.get(CLIENT_ID)
@@ -74,7 +75,7 @@ def oauth_signin(request):
         pass
 
 
-def generate_token(request):
+def generate_token(request: HttpRequest):
     if request.method == POST:
         json_data = loads(request.body)
 
@@ -112,7 +113,7 @@ def generate_token(request):
         return HttpResponse(status=405)
 
 
-def refresh_access_token(request):
+def refresh_access_token(request: HttpRequest):
     if request.method == POST:
         json_data = loads(request.body)
         refresh_token = models.RefreshTokenModel.objects.get(
@@ -140,6 +141,27 @@ def refresh_access_token(request):
         return HttpResponse(status=405)
 
 
+def get_user_info(request: HttpRequest):
+    if request.method == GET:
+        access_token = request.META.get(HTTP_AUTHORIZATION).split()
+        if access_token[0].lower() != BEARER:
+            return HttpResponse(status=422)
+
+        access_token = models.AccessTokenModel.objects.get(access_token=access_token[1])
+        if datetime.now().timestamp() > access_token.expire_timestamp:
+            access_token.delete()
+            return HttpResponse(status=422)
+
+        student = access_token.student
+        return JsonResponse({
+            NAME: student.name,
+            NUMBER: student.number,
+            UUID: student.uuid,
+        })
+    else:
+        return HttpResponse(status=405)
+
+
 class LoginRequiredMixin(object):
     @classmethod
     def as_view(cls, **initkwargs):
@@ -156,11 +178,11 @@ class AppCreateView(LoginRequiredMixin, CreateView):
 
 
 class AppView(LoginRequiredMixin, View):  # TODO: App View 구현
-    def get(self, request, app_id):
+    def get(self, request: HttpRequest, app_id):
         app = models.AppModel.objects.get(id=app_id, owner=request.user)
         # return render()
 
-    def delete(self, request, app_id):
+    def delete(self, request: HttpRequest, app_id):
         models.AppModel.objects.get(id=app_id, owner=request.user).delete()
         # return redirect()
 
