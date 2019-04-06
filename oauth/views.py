@@ -75,7 +75,7 @@ def oauth_signin(request):
 
 def generate_token(request):
     if request.method == 'POST':
-        json_data = request.body
+        json_data = loads(request.body)
 
         token = models.TokenModel.objects.get(
             token=json_data['code'],
@@ -83,7 +83,7 @@ def generate_token(request):
             app__secret_key=json_data['secret_key'],
         )
         if token is None:
-            HttpResponse(status=204)
+            return HttpResponse(status=204)
 
         access_token = f'a_{token.app.id}_{uuid4()}'
         expire_timestamp = int(datetime.now().timestamp()) + 600
@@ -110,6 +110,33 @@ def generate_token(request):
     else:
         return HttpResponse(status=405)
 
+
+def refresh_access_token(request):
+    if request.method == 'POST':
+        json_data = loads(request.body)
+        refresh_token = models.RefreshTokenModel.objects.get(
+            app__client_id=json_data['client_id'],
+            app__secret_key=json_data['secret_key'],
+            refresh_token=json_data['refresh_token']
+        )
+        if refresh_token is None:
+            return HttpResponse(status=204)
+
+        access_token = f'a_{token.app.id}_{uuid4()}'
+        expire_timestamp = int(datetime.now().timestamp()) + 600
+        models.AccessTokenModel(
+            access_token=access_token,
+            app=refresh_token.app,
+            student=refresh_token.student,
+            expire_timestamp=expire_timestamp
+        ).save()
+        return JsonResponse({
+            "access_token": access_token,
+            "expire_timestamp": expire_timestamp,
+            "token_type": "bearer",
+        })
+    else:
+        return HttpResponse(status=405)
 
 
 class LoginRequiredMixin(object):

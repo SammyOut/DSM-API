@@ -103,7 +103,7 @@ def create_app():
     'tags': ['App'],
     'description': 'Client ID, Secret Key 갱신하기',
     'parameters': [
-        parameter('app_id', '삭제할 앱 아이디', type_='integer', in_='url'),
+        parameter('app_id', '앱 아이디', type_='integer', in_='url'),
         JWT
     ],
     'responses': {
@@ -139,7 +139,7 @@ def delete_app(app_id):
     'tags': ['App'],
     'description': '앱 사용을 허용한 유저 목록',
     'parameters': [
-        parameter('app_id', '삭제할 앱 아이디', type_='integer', in_='url'),
+        parameter('app_id', '앱 아이디', type_='integer', in_='url'),
         JWT
     ],
     'responses': {
