@@ -4,35 +4,36 @@ from uuid import uuid4
 
 from django.contrib.auth import login, authenticate, get_user_model
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
 from django.http import HttpResponse, JsonResponse
+from django.shortcuts import redirect, render
 from django.views.generic import View, ListView, CreateView
 
+from const import *
 from . import forms
 from . import models
 
 
 def signup(request):
-    if request.method == 'POST':
+    if request.method == POST:
         form = forms.SignupForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
-            data['password'] = data['password1']
-            del data['password1']
-            del data['password2']
+            data[PASSWORD] = data[PASSWORD1]
+            del data[PASSWORD1]
+            del data[PASSWORD2]
             user = get_user_model().objects.create_user(**form.cleaned_data)
             login(request, user)
-            return redirect()
+            # return redirect()
     else:
         form = forms.SignupForm()
-    return render(request, 'signup.html', {'form': form})
+    return render(request, 'signup.html', {FORM: form})
 
 
 def signin(request):
-    if request.method == 'POST':
+    if request.method == POST:
         form = forms.LoginForm(request.POST)
-        username = request.POST['username']
-        password = request.POST['password']
+        username = request.POST[USERNAME]
+        password = request.POST[PASSWORD]
 
         user = authenticate(username=username, password=password)
         if user is not None:
@@ -41,21 +42,21 @@ def signin(request):
     else:
         form = forms.LoginForm()
 
-    return render(request, 'login.html', {'form': form})
+    return render(request, 'login.html', {FORM: form})
 
 
 def oauth_signin(request):
-    if request.method == 'POST':
+    if request.method == POST:
         form = forms.LoginForm(request.POST)
-        client_id = request.POST.get('client_id')
-        redirect_url = request.POST.get('redirect_url')
+        client_id = request.POST.get(CLIENT_ID)
+        redirect_url = request.POST.get(REDIRECT_URL)
         app = models.AppModel.objects.get(client_id=client_id)
         if app is None:
             # redirect()
             pass
 
-        username = request.POST['username']
-        password = request.POST['password']
+        username = request.POST[USERNAME]
+        password = request.POST[PASSWORD]
 
         user = authenticate(username=username, password=password)
         if user is None:
@@ -63,7 +64,7 @@ def oauth_signin(request):
             pass
 
         models.TokenModel(
-            token=username+client_id,  # TODO: hash 값으로
+            token=username + client_id,  # TODO: hash 값으로
             student=user,
             app=app,
         ).save()
@@ -74,13 +75,13 @@ def oauth_signin(request):
 
 
 def generate_token(request):
-    if request.method == 'POST':
+    if request.method == POST:
         json_data = loads(request.body)
 
         token = models.TokenModel.objects.get(
-            token=json_data['code'],
-            app__client_id=json_data['client_id'],
-            app__secret_key=json_data['secret_key'],
+            token=json_data[CODE],
+            app__client_id=json_data[CLIENT_ID],
+            app__secret_key=json_data[SECRET_KEY],
         )
         if token is None:
             return HttpResponse(status=204)
@@ -102,22 +103,22 @@ def generate_token(request):
         ).save()
 
         return JsonResponse({
-            "access_token": access_token,
-            "expire_timestamp": expire_timestamp,
-            "refresh_token": refresh_token,
-            "token_type": "bearer",
+            ACCESS_TOKEN: access_token,
+            EXPIRE_TIMESTAMP: expire_timestamp,
+            REFRESH_TOKEN: refresh_token,
+            TOKEN_TYPE: BEARER,
         })
     else:
         return HttpResponse(status=405)
 
 
 def refresh_access_token(request):
-    if request.method == 'POST':
+    if request.method == POST:
         json_data = loads(request.body)
         refresh_token = models.RefreshTokenModel.objects.get(
-            app__client_id=json_data['client_id'],
-            app__secret_key=json_data['secret_key'],
-            refresh_token=json_data['refresh_token']
+            app__client_id=json_data[CLIENT_ID],
+            app__secret_key=json_data[SECRET_KEY],
+            refresh_token=json_data[REFRESH_TOKEN]
         )
         if refresh_token is None:
             return HttpResponse(status=204)
@@ -131,9 +132,9 @@ def refresh_access_token(request):
             expire_timestamp=expire_timestamp
         ).save()
         return JsonResponse({
-            "access_token": access_token,
-            "expire_timestamp": expire_timestamp,
-            "token_type": "bearer",
+            ACCESS_TOKEN: access_token,
+            EXPIRE_TIMESTAMP: expire_timestamp,
+            TOKEN_TYPE: BEARER,
         })
     else:
         return HttpResponse(status=405)
