@@ -156,14 +156,13 @@ class AppCreateView(LoginRequiredMixin, CreateView):
 
 
 class AppView(LoginRequiredMixin, View):  # TODO: App View 구현
-    def get(self, request):
-        pass
+    def get(self, request, app_id):
+        app = models.AppModel.objects.get(id=app_id, owner=request.user)
+        # return render()
 
-    def delete(self, request):
-        pass
-
-    def patch(self, request):
-        pass
+    def delete(self, request, app_id):
+        models.AppModel.objects.get(id=app_id, owner=request.user).delete()
+        # return redirect()
 
 
 class ServiceListView(LoginRequiredMixin, ListView):
