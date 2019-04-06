@@ -37,9 +37,6 @@ class TokenModel(models.Model):
     def __str__(self):
         return f'{self.app.name} {self.student.number}'
 
-    class Meta:
-        unique_together = (('app', 'student'), )
-
 
 class RefreshTokenModel(models.Model):
     refresh_token = models.CharField(max_length=256, primary_key=True)
@@ -48,9 +45,6 @@ class RefreshTokenModel(models.Model):
 
     def __str__(self):
         return f'{self.app.name} {self.student.number}'
-
-    class Meta:
-        unique_together = (('app', 'student'), )
 
 
 class AccessTokenModel(models.Model):

@@ -1,6 +1,11 @@
+from datetime import datetime
+from json import loads
+from uuid import uuid4
+
 from django.contrib.auth import login, authenticate, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
+from django.http import HttpResponse, JsonResponse
 from django.views.generic import View, ListView, CreateView
 
 from . import forms
@@ -34,7 +39,7 @@ def signin(request):
             login(request, user)
             # return redirect()
     else:
-        form = forms.LoginForm
+        form = forms.LoginForm()
 
     return render(request, 'login.html', {'form': form})
 
@@ -43,6 +48,7 @@ def oauth_signin(request):
     if request.method == 'POST':
         form = forms.LoginForm(request.POST)
         client_id = request.POST.get('client_id')
+        redirect_url = request.POST.get('redirect_url')
         app = models.AppModel.objects.get(client_id=client_id)
         if app is None:
             # redirect()
@@ -62,6 +68,48 @@ def oauth_signin(request):
             app=app,
         ).save()
         # redirect(redirect_url?code=token)
+    else:
+        # return render(request, 'oauth_login.html', {'form': form})
+        pass
+
+
+def generate_token(request):
+    if request.method == 'POST':
+        json_data = request.body
+
+        token = models.TokenModel.objects.get(
+            token=json_data['code'],
+            app__client_id=json_data['client_id'],
+            app__secret_key=json_data['secret_key'],
+        )
+        if token is None:
+            HttpResponse(status=204)
+
+        access_token = f'a_{token.app.id}_{uuid4()}'
+        expire_timestamp = int(datetime.now().timestamp()) + 600
+        models.AccessTokenModel(
+            access_token=access_token,
+            app=token.app,
+            student=token.student,
+            expire_timestamp=expire_timestamp
+        ).save()
+
+        refresh_token = f'r_{token.app.id}_{uuid4()}'
+        models.RefreshTokenModel(
+            refresh_token=refresh_token,
+            app=token.app,
+            student=token.student,
+        ).save()
+
+        return JsonResponse({
+            "access_token": access_token,
+            "expire_timestamp": expire_timestamp,
+            "refresh_token": refresh_token,
+            "token_type": "bearer",
+        })
+    else:
+        return HttpResponse(status=405)
+
 
 
 class LoginRequiredMixin(object):
