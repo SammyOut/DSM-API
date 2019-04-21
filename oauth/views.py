@@ -14,8 +14,12 @@ from . import forms
 from . import models
 
 
+def main(request: HttpRequest):
+    return render(request, 'main.html')
+
+
 def signup(request: HttpRequest):
-    if request.method == POST:
+    if request.method.upper() == POST:
         form = forms.SignupForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
@@ -24,7 +28,7 @@ def signup(request: HttpRequest):
             del data[PASSWORD2]
             user = get_user_model().objects.create_user(**form.cleaned_data)
             login(request, user)
-            # return redirect()
+            return redirect(request, )
     else:
         form = forms.SignupForm()
     return render(request, 'signup.html', {FORM: form})
@@ -39,11 +43,10 @@ def signin(request: HttpRequest):
         user = authenticate(username=username, password=password)
         if user is not None:
             login(request, user)
-            # return redirect()
+            return redirect('main')
     else:
         form = forms.LoginForm()
-
-    return render(request, 'login.html', {FORM: form})
+    return render(request, 'main.html', {FORM: form})
 
 
 def oauth_signin(request: HttpRequest):
