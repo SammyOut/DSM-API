@@ -1,8 +1,54 @@
-{% block content %}
-  <h2>Sign up</h2>
-  <form method="post" action="{% url 'signup' %}">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Signin Template for Bootstrap</title>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" href="../static/css/signin.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+  <form class="form-signin" method="post" action="{% url 'signup' %}">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Sign up</button>
+    <h2 class="form-signin-heading">Sign up</h2>
+
+    <label for="inputUUID" class="sr-only">UUID</label>
+    <input type="text" name="uuid" class="form-control" placeholder="UUID" required>
+
+    <label for="inputName" class="sr-only">Name</label>
+    <input type="text" name="name" class="form-control" placeholder="Name" required>
+
+    <label for="inputNumber" class="sr-only">Name</label>
+    <input type="number" name="number" class="form-control" placeholder="Number" required>
+
+    <label for="inputEmail" class="sr-only">Email</label>
+    <input type="email" name="email" class="form-control" placeholder="Email" required>
+
+    <label for="inputUsername" class="sr-only">Username</label>
+    <input type="text" name="username" class="form-control" placeholder="Username" required>
+
+    <label for="inputPassword1" class="sr-only">Password</label>
+    <input type="password" name="password1" class="form-control" placeholder="Password1" required>
+
+    <label for="inputPassword2" class="sr-only">Password</label>
+    <input type="password" name="password2" class="form-control" placeholder="Password2" required>
+
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
   </form>
-{% endblock %}
+
+</div> <!-- /container -->
+</body>
+</html>

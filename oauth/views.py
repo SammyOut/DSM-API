@@ -3,7 +3,7 @@ from json import loads
 from uuid import uuid4
 
 from django.http import HttpRequest
-from django.contrib.auth import login, authenticate, get_user_model
+from django.contrib.auth import login, authenticate, get_user_model, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
@@ -28,7 +28,7 @@ def signup(request: HttpRequest):
             del data[PASSWORD2]
             user = get_user_model().objects.create_user(**form.cleaned_data)
             login(request, user)
-            return redirect(request, )
+            return redirect('main')
     else:
         form = forms.SignupForm()
     return render(request, 'signup.html', {FORM: form})
@@ -46,7 +46,12 @@ def signin(request: HttpRequest):
             return redirect('main')
     else:
         form = forms.LoginForm()
-    return render(request, 'main.html', {FORM: form})
+    return render(request, 'signup.html', {FORM: form})
+
+
+def signout(request: HttpRequest):
+    logout(request)
+    return redirect('main')
 
 
 def oauth_signin(request: HttpRequest):
