@@ -203,3 +203,10 @@ class AppView(LoginRequiredMixin, View):  # TODO: App View 구현
 
 class ServiceListView(LoginRequiredMixin, ListView):
     model = models.ServiceModel
+
+    template_name = 'service_list.html'
+    context_object_name = 'service_list'
+
+    def get_queryset(self):
+        queryset = models.ServiceModel.objects.all()
+        return [queryset[a:a+3] for a in range(0, len(queryset), 3)]
