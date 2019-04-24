@@ -8,7 +8,7 @@ urlpatterns = [
     path('signout/', views.signout, name='signout'),
     path('login/', views.signin, name='login'),
 
-    path('app/', views.AppListView.as_view()),
+    path('app/', views.AppListView.as_view(), name='app_list'),
     path('app/<int:app_id>', views.AppView.as_view()),
 
     path('oauth/login/', views.oauth_signin, name='oauth_login_view'),

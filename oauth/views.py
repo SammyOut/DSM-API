@@ -177,8 +177,14 @@ class LoginRequiredMixin(object):
         return login_required(view)
 
 
-class AppListView(LoginRequiredMixin, ListView):
+class AppListView(ListView):
     model = models.AppModel
+    template_name = 'app_list.html'
+    context_object_name = 'app_list'
+
+    def get_queryset(self):
+        queryset = models.AppModel.objects.all()
+        return [queryset[a:a+3] for a in range(0, len(queryset), 3)]
 
 
 class AppCreateView(LoginRequiredMixin, CreateView):
