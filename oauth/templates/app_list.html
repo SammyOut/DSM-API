@@ -1,90 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+{% extends 'jumbotron_base.html' %}
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="">
-  <meta name="author" content="">
-  <link rel="icon" href="http://bootstrapk.com/favicon.ico">
+{% block jumbotron %}
+  <h1>학교 프로젝트 목록</h1>
+  <p>DSM-API가 적용된 학교 프로젝트들의 목록입니다.<br>DSM-API의 유즈케이스들을 확인할 수 있습니다.</p>
+{% endblock %}
 
-  <title>DSM-API</title>
-
-  <link href="../static/css/bootstrap.min.css" rel="stylesheet">
-  <link href="../static/css/jumbotron.css" rel="stylesheet">
-</head>
-
-<body>
-
-<nav class="navbar navbar-inverse navbar-fixed-top">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
-              aria-expanded="false" aria-controls="navbar">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="{% url 'main' %}">DSM-API</a>
-    </div>
-    {% if not user.is_authenticated %}
-      <div id="navbar" class="navbar-collapse collapse">
-        <form method="post" action="{% url 'login' %}" class="navbar-form navbar-right">
-          {% csrf_token %}
-          <div class="form-group">
-            <input type="text" placeholder="Username" name="username" class="form-control">
-          </div>
-          <div class="form-group">
-            <input type="password" placeholder="Password" name="password" class="form-control">
-          </div>
-          <button type="submit" class="btn btn-success">Sign In</button>
-          <a class="btn btn-success" href="{% url 'signup' %}" role="button">Sign Up</a>
-        </form>
-      </div>
-    {% else %}
-      <div id="navbar" class="navbar-collapse collapse">
-        <div class="navbar-form navbar-right">
-          <a class="btn btn-info" role="button">앱 관리</a>
-          <a class="btn btn-info" href="{% url 'signout' %}" role="button">Sign out</a>
-        </div>
-      </div>
-    {% endif %}
-  </div>
-</nav>
-
-<div class="jumbotron">
-  <div class="container">
-    <h1>학교 프로젝트 목록</h1>
-    <p>DSM-API가 적용된 학교 프로젝트들의 목록입니다.<br>DSM-API의 유즈케이스들을 확인할 수 있습니다.</p>
-  </div>
-</div>
-
-<div class="container">
-
+{% block container %}
   {% for set in app_list %}
     <div class="row">
       {% for app in set %}
         <div class="col-md-4">
           <h2>{{ app.name }}</h2>
           <p>{{ app.description }}</p>
-        {% if app.app_url %}
-          <p><a class="btn btn-default" href="{{ app.app_url }}" role="button">앱으로 이 »</a>
+          {% if app.app_url %}
+            <p><a class="btn btn-default" href="{{ app.app_url }}" role="button">앱으로 이 »</a>
 
-        {% endif %}
+          {% endif %}
         </div>
       {% endfor %}
     </div>
   {% endfor %}
-
-  <hr>
-  <footer>
-    <p><a href="https://github.com/Nerd-Bear">© Nerd-Bear</a></p>
-  </footer>
-</div>
-
-
-<script src="../static/js/jquery.min.js"></script>
-<script src="../static/js/bootstrap.min.js"></script>
-</body>
-</html>
+{% endblock %}

@@ -201,7 +201,7 @@ class AppView(LoginRequiredMixin, View):  # TODO: App View 구현
         # return redirect()
 
 
-class ServiceListView(LoginRequiredMixin, ListView):
+class ServiceListView(ListView):
     model = models.ServiceModel
 
     template_name = 'service_list.html'
