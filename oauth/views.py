@@ -203,6 +203,16 @@ class AppCreateView(LoginRequiredMixin, CreateView):
         return HttpResponseRedirect('/')
 
 
+class AppManageListView(LoginRequiredMixin, ListView):
+    model = models.AppModel
+    template_name = 'app_manage_list.html'
+    context_object_name = 'app_list'
+
+    def get_queryset(self):
+        queryset = models.AppModel.objects.filter(owner=self.request.user)
+        return [queryset[a:a+3] for a in range(0, len(queryset), 3)]
+
+
 class AppView(LoginRequiredMixin, View):  # TODO: App View 구현
     def get(self, request: HttpRequest, app_id):
         app = models.AppModel.objects.get(id=app_id, owner=request.user)

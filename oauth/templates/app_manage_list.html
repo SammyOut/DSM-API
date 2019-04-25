@@ -1,0 +1,20 @@
+{% extends 'jumbotron_base.html' %}
+
+{% block introduction %}
+  <h1>서비스 목록</h1>
+  <p>DSM-API에서 지원하는 서비스들의 목록입니다.<br>현재는 OAuth만 지원하고 있습니다.</p>
+{% endblock %}
+
+{% block container %}
+  {% for set in app_list %}
+    <div class="row">
+      {% for app in set %}
+        <div class="col-md-4">
+          <h2>{{ app.name }}</h2>
+          <p>{{ app.description }}</p>
+          <p><a class="btn btn-default" href="{% url 'main' %}" role="button">상세 보기 »</a> {# TODO: 앱 관리로 리다이렉트 #}
+        </div>
+      {% endfor %}
+    </div>
+  {% endfor %}
+{% endblock %}
