@@ -5,8 +5,8 @@ from uuid import uuid4
 from django.http import HttpRequest
 from django.contrib.auth import login, authenticate, get_user_model, logout
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, JsonResponse
-from django.shortcuts import redirect, render
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
+from django.shortcuts import redirect, render, reverse
 from django.views.generic import View, ListView, CreateView
 
 from const import *
@@ -189,6 +189,18 @@ class AppListView(ListView):
 
 class AppCreateView(LoginRequiredMixin, CreateView):
     model = models.AppModel
+    form_class = forms.AppCreateForm
+
+    template_name = 'app_create.html'
+    success_url = '/'
+
+    def form_valid(self, form):
+        app = form.save(commit=False)
+        app.owner = self.request.user
+        app.save()
+        print(self.request.user)
+
+        return HttpResponseRedirect('/')
 
 
 class AppView(LoginRequiredMixin, View):  # TODO: App View 구현

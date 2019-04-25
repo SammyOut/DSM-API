@@ -1,4 +1,5 @@
 from datetime import datetime
+from uuid import uuid4
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -6,6 +7,10 @@ from django.db import models
 
 def get_timestamp_after_10m() -> int:
     return int(datetime.now().timestamp()) + 600
+
+
+def get_random_hash() -> str:
+    return uuid4().hex
 
 
 class StudentModel(AbstractUser):
@@ -22,8 +27,8 @@ class AppModel(models.Model):
     name = models.CharField(max_length=256, unique=True)
     description = models.CharField(max_length=1024)
     owner = models.ForeignKey(StudentModel, on_delete=models.CASCADE)
-    client_id = models.CharField(max_length=256, unique=True)
-    secret_key = models.CharField(max_length=256, unique=True)
+    client_id = models.CharField(max_length=256, unique=True, default=get_random_hash)
+    secret_key = models.CharField(max_length=256, unique=True, default=get_random_hash)
     app_url = models.CharField(max_length=1024, blank=True)
 
     def __str__(self):
