@@ -45,6 +45,7 @@
     {% else %}
       <div id="navbar" class="navbar-collapse collapse">
         <div class="navbar-form navbar-right">
+          <p class="btn navbar-username">{{ user.name }}</p>
           <a class="btn btn-info" role="button">앱 관리</a>
           <a class="btn btn-info" href="{% url 'signout' %}" role="button">Sign out</a>
         </div>
