@@ -13,8 +13,7 @@
           <h2>{{ app.name }}</h2>
           <p>{{ app.description }}</p>
           {% if app.app_url %}
-            <p><a class="btn btn-default" href="{{ app.app_url }}" role="button">앱으로 이 »</a>
-
+            <a class="btn btn-default" href="{{ app.app_url }}" role="button">앱으로 이동 »</a>
           {% endif %}
         </div>
       {% endfor %}
