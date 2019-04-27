@@ -6,13 +6,18 @@
 {% endblock %}
 
 {% block container %}
+  <div class="row">
+    <div class="col-md-4">
+      <a class="btn btn-info" href="{% url 'app_create' %}" role="button">앱 생성</a>
+    </div>
+  </div>
   {% for set in app_list %}
     <div class="row">
       {% for app in set %}
         <div class="col-md-4">
           <h2>{{ app.name }}</h2>
           <p>{{ app.description }}</p>
-          <p><a class="btn btn-default" href="{% url 'main' %}" role="button">상세 보기 »</a> {# TODO: 앱 관리로 리다이렉트 #}
+          <a class="btn btn-default" href="{% url 'main' %}" role="button">상세 보기 »</a> {# TODO: 앱 관리로 리다이렉트 #}
         </div>
       {% endfor %}
     </div>
