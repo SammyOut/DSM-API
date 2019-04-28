@@ -2,7 +2,7 @@ from datetime import datetime
 from json import loads
 from uuid import uuid4
 
-from django.http import HttpRequest, HttpResponse, JsonResponse, HttpResponseRedirect
+from django.http import HttpRequest, HttpResponse, JsonResponse, HttpResponseRedirect, Http404
 from django.contrib.auth import login, authenticate, get_user_model, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, reverse
@@ -11,6 +11,7 @@ from django.views.generic import View, ListView, CreateView, UpdateView
 from const import *
 from . import forms
 from . import models
+import exception
 
 
 def main(request: HttpRequest):
@@ -222,6 +223,12 @@ class AppManageView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse('app_manage_list')
+
+    def dispatch(self, request, *args, **kwargs):
+        app = self.get_object()
+        if app.owner != self.request.user:
+            raise exception.ForbiddenException()
+        return super(AppManageView, self).dispatch(request, *args, **kwargs)
 
 
 class ServiceListView(ListView):
