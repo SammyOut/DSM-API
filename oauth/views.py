@@ -231,6 +231,19 @@ class AppManageView(LoginRequiredMixin, UpdateView):
         return super(AppManageView, self).dispatch(request, *args, **kwargs)
 
 
+def refresh_app_token(request: HttpRequest, app_id: int):
+    app = models.AppModel.objects.get(id=app_id)
+
+    if app.owner != request.user:
+        raise exception.ForbiddenException()
+
+    app.client_id = uuid4().hex
+    app.secret_key = uuid4().hex
+    app.save()
+
+    return HttpResponseRedirect(reverse('app_manage_list'))
+
+
 class ServiceListView(ListView):
     model = models.ServiceModel
 
