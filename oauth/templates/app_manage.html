@@ -1,0 +1,22 @@
+{% extends 'input_base.html' %}
+
+{% block form %}
+  <form class="form-signin" method="post" action="{% url 'app_manage' app.id %}">
+    {% csrf_token %}
+    <h2 class="form-signin-heading">Update app</h2>
+    <label for="inputName" class="sr-only">App Name</label>
+    <div>Name</div>
+    <input type="text" name="name" class="form-control" placeholder="App Name" value="{{ app.name }}" required>
+
+    <label for="inputDescription" class="sr-only">App Description</label>
+    <div>Description</div>
+    <input type="text" name="description" class="form-control" placeholder="App Description"
+           value="{{ app.description }}" required>
+
+    <label for="inputUrl" class="sr-only">App Url</label>
+    <div>App Url</div>
+    <input type="url" name="app_url" class="form-control" placeholder="App Url" value="{{ app.app_url }}">
+
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Update app</button>
+  </form>
+{% endblock %}

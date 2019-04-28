@@ -2,12 +2,11 @@ from datetime import datetime
 from json import loads
 from uuid import uuid4
 
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse, JsonResponse, HttpResponseRedirect
 from django.contrib.auth import login, authenticate, get_user_model, logout
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render, reverse
-from django.views.generic import View, ListView, CreateView
+from django.views.generic import View, ListView, CreateView, UpdateView
 
 from const import *
 from . import forms
@@ -213,14 +212,16 @@ class AppManageListView(LoginRequiredMixin, ListView):
         return [queryset[a:a+3] for a in range(0, len(queryset), 3)]
 
 
-class AppView(LoginRequiredMixin, View):  # TODO: App View 구현
-    def get(self, request: HttpRequest, app_id):
-        app = models.AppModel.objects.get(id=app_id, owner=request.user)
-        # return render()
+class AppManageView(LoginRequiredMixin, UpdateView):
+    model = models.AppModel
+    template_name = 'app_manage.html'
+    context_object_name = 'app'
 
-    def delete(self, request: HttpRequest, app_id):
-        models.AppModel.objects.get(id=app_id, owner=request.user).delete()
-        # return redirect()
+    fields = ('name', 'description', 'app_url',)
+    pk_url_kwarg = 'app_id'
+
+    def get_success_url(self):
+        return reverse('app_manage_list')
 
 
 class ServiceListView(ListView):
