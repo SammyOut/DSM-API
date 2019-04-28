@@ -2,11 +2,11 @@ from datetime import datetime
 from json import loads
 from uuid import uuid4
 
-from django.http import HttpRequest, HttpResponse, JsonResponse, HttpResponseRedirect, Http404
+from django.http import HttpRequest, HttpResponse, JsonResponse, HttpResponseRedirect
 from django.contrib.auth import login, authenticate, get_user_model, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, reverse
-from django.views.generic import View, ListView, CreateView, UpdateView
+from django.views.generic import View, ListView, CreateView, UpdateView, DeleteView
 
 from const import *
 from . import forms
@@ -192,15 +192,16 @@ class AppCreateView(LoginRequiredMixin, CreateView):
     form_class = forms.AppCreateForm
 
     template_name = 'app_create.html'
-    success_url = '/'
 
     def form_valid(self, form):
         app = form.save(commit=False)
         app.owner = self.request.user
         app.save()
-        print(self.request.user)
 
         return HttpResponseRedirect('/')
+
+    def get_success_url(self):
+        return reverse('app_manage_list')
 
 
 class AppManageListView(LoginRequiredMixin, ListView):
@@ -229,6 +230,24 @@ class AppManageView(LoginRequiredMixin, UpdateView):
         if app.owner != self.request.user:
             raise exception.ForbiddenException()
         return super(AppManageView, self).dispatch(request, *args, **kwargs)
+
+
+class AppDeleteView(LoginRequiredMixin, DeleteView):
+    model = models.AppModel
+
+    pk_url_kwarg = 'app_id'
+
+    def get_success_url(self):
+        return reverse('app_manage_list')
+
+    def dispatch(self, request, *args, **kwargs):
+        app = self.get_object()
+        if app.owner != self.request.user:
+            raise exception.ForbiddenException()
+        return super(AppDeleteView, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        return self.delete(request, *args, **kwargs)
 
 
 def refresh_app_token(request: HttpRequest, app_id: int):

@@ -22,7 +22,8 @@
           {% if app.app_url %}
             <p>app_url: {{ app.app_url }}</p>
           {% endif %}
-          <a class="btn btn-default" href="{% url 'app_manage' app.id %}" role="button">수정 »</a>
+          <a class="btn btn-default" href="{% url 'app_manage' app.id %}" role="button">정보 수정 »</a>
+          <a class="btn btn-default" href="{% url 'app_manage' app.id %}" role="button">서비스 수정 »</a>
         </div>
       {% endfor %}
     </div>

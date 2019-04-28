@@ -18,6 +18,7 @@
     <input type="url" name="app_url" class="form-control" placeholder="App Url" value="{{ app.app_url }}">
 
     <button class="btn btn-lg btn-primary btn-block" type="submit">Update app</button>
-    <a class="btn btn-danger btn-lg btn-primary btn-block" type="button" href="{% url 'refresh_app_token' app.id %}">Refresh client_id, secret_key</a>
+    <a class="btn btn-warning btn-lg btn-primary btn-block" type="button" href="{% url 'refresh_app_token' app.id %}">Refresh client_id, secret_key</a>
+    <a class="btn btn-danger btn-lg btn-primary btn-block" type="button" href="{% url 'app_delete' app.id %}">Delete App</a>
   </form>
 {% endblock %}
