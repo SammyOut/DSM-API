@@ -17,7 +17,7 @@ urlpatterns = [
 
     path('service/', views.ServiceListView.as_view(), name='service_list'),
 
-    path('oauth/login/', views.oauth_signin, name='oauth_login_view'),
+    path('oauth/login/', views.oauth_signin, name='oauth_login'),
     path('oauth/token/', views.generate_token, name='oauth_get_access_token'),
     path('oauth/refresh/', views.refresh_access_token, name='oauth_refresh_access_token'),
 

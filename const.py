@@ -16,8 +16,8 @@ TOKEN_TYPE = 'token_type'
 BEARER = 'bearer'
 HTTP_AUTHORIZATION = 'HTTP_AUTHORIZATION'
 
-NAME = 'name',
-NUMBER = 'number',
+NAME = 'name'
+NUMBER = 'number'
 UUID = 'uuid'
 
 REDIRECT_URL = 'redirect_url'

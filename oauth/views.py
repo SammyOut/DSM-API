@@ -7,6 +7,7 @@ from django.contrib.auth import login, authenticate, get_user_model, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, reverse
 from django.views.generic import View, ListView, CreateView, UpdateView, DeleteView
+from django.views.decorators.csrf import csrf_exempt
 
 from const import *
 from . import forms
@@ -54,35 +55,34 @@ def signout(request: HttpRequest):
     return redirect('main')
 
 
+@csrf_exempt
 def oauth_signin(request: HttpRequest):
     if request.method == POST:
-        form = forms.LoginForm(request.POST)
         client_id = request.POST.get(CLIENT_ID)
         redirect_url = request.POST.get(REDIRECT_URL)
         app = models.AppModel.objects.get(client_id=client_id)
         if app is None:
-            # redirect()
-            pass
+            return HttpResponse(status=404)
 
         username = request.POST[USERNAME]
         password = request.POST[PASSWORD]
 
         user = authenticate(username=username, password=password)
         if user is None:
-            # redirect()
-            pass
+            return HttpResponseRedirect(reverse('oauth_login'))
 
+        token = f'{app.name}_{uuid4().hex}'
         models.TokenModel(
-            token=username + client_id,  # TODO: hash 값으로
+            token=token,
             student=user,
             app=app,
         ).save()
-        # redirect(redirect_url?code=token)
+        return HttpResponseRedirect(f'{redirect_url}?code={token}')
     else:
-        # return render(request, 'oauth_login.html', {'form': form})
-        pass
+        return render(request, 'oauth_signin.html')
 
 
+@csrf_exempt
 def generate_token(request: HttpRequest):
     if request.method == POST:
         json_data = loads(request.body)
@@ -121,6 +121,7 @@ def generate_token(request: HttpRequest):
         return HttpResponse(status=405)
 
 
+@csrf_exempt
 def refresh_access_token(request: HttpRequest):
     if request.method == POST:
         json_data = loads(request.body)
@@ -132,7 +133,7 @@ def refresh_access_token(request: HttpRequest):
         if refresh_token is None:
             return HttpResponse(status=204)
 
-        access_token = f'a_{token.app.id}_{uuid4()}'
+        access_token = f'a_{refresh_token.app.id}_{uuid4()}'
         expire_timestamp = int(datetime.now().timestamp()) + 600
         models.AccessTokenModel(
             access_token=access_token,
@@ -149,6 +150,7 @@ def refresh_access_token(request: HttpRequest):
         return HttpResponse(status=405)
 
 
+@csrf_exempt
 def get_user_info(request: HttpRequest):
     if request.method == GET:
         access_token = request.META.get(HTTP_AUTHORIZATION).split()
