@@ -1,5 +1,9 @@
 {% extends 'input_base.html' %}
 
+{% block title %}
+  <title>App-Create</title>
+{% endblock %}
+
 {% block form%}
     <form class="form-signin" method="post" action="{% url 'app_create' %}">
     {% csrf_token %}
