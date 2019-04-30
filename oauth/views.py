@@ -3,10 +3,10 @@ from json import loads
 from uuid import uuid4
 
 from django.http import HttpRequest, HttpResponse, JsonResponse, HttpResponseRedirect
-from django.contrib.auth import login, authenticate, get_user_model, logout
+from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, reverse
-from django.views.generic import View, ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.views.decorators.csrf import csrf_exempt
 
 from const import *
@@ -27,36 +27,36 @@ def signup(request: HttpRequest):
             data[PASSWORD] = data[PASSWORD1]
             del data[PASSWORD1]
             del data[PASSWORD2]
-            user = get_user_model().objects.create_user(**form.cleaned_data)
-            login(request, user)
+            user = auth.get_user_model().objects.create_user(**form.cleaned_data)
+            auth.login(request, user)
             return redirect('main')
     else:
         form = forms.SignupForm()
     return render(request, 'signup.html', {FORM: form})
 
 
-def signin(request: HttpRequest):
+def login(request: HttpRequest):
     if request.method == POST:
         form = forms.LoginForm(request.POST)
         username = request.POST[USERNAME]
         password = request.POST[PASSWORD]
 
-        user = authenticate(username=username, password=password)
+        user = auth.authenticate(username=username, password=password)
         if user is not None:
-            login(request, user)
+            auth.login(request, user)
             return redirect('main')
     else:
         form = forms.LoginForm()
     return render(request, 'signup.html', {FORM: form})
 
 
-def signout(request: HttpRequest):
-    logout(request)
+def logout(request: HttpRequest):
+    auth.logout(request)
     return redirect('main')
 
 
 @csrf_exempt
-def oauth_signin(request: HttpRequest):
+def oauth_login(request: HttpRequest):
     if request.method == POST:
         client_id = request.POST.get(CLIENT_ID)
         redirect_url = request.POST.get(REDIRECT_URL)
@@ -67,7 +67,7 @@ def oauth_signin(request: HttpRequest):
         username = request.POST[USERNAME]
         password = request.POST[PASSWORD]
 
-        user = authenticate(username=username, password=password)
+        user = auth.authenticate(username=username, password=password)
         if user is None:
             return HttpResponseRedirect(reverse('oauth_login'))
 
@@ -79,7 +79,7 @@ def oauth_signin(request: HttpRequest):
         ).save()
         return HttpResponseRedirect(f'{redirect_url}?code={token}')
     else:
-        return render(request, 'oauth_signin.html')
+        return render(request, 'oauth_login.html')
 
 
 @csrf_exempt
