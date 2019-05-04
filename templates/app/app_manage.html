@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block form %}
-  <form class="form-signin" method="post" action="{% url 'app_manage' app.id %}">
+  <form class="form-signin" method="post" action="{% url 'app:app_manage' app.id %}">
     {% csrf_token %}
     <h2 class="form-signin-heading">Update app</h2>
     <label for="inputName" class="sr-only">App Name</label>
@@ -22,7 +22,7 @@
     <input type="url" name="app_url" class="form-control" placeholder="App Url" value="{{ app.app_url }}">
 
     <button class="btn btn-lg btn-primary btn-block" type="submit">Update app</button>
-    <a class="btn btn-warning btn-lg btn-primary btn-block" type="button" href="{% url 'refresh_app_token' app.id %}">Refresh client_id, secret_key</a>
-    <a class="btn btn-danger btn-lg btn-primary btn-block" type="button" href="{% url 'app_delete' app.id %}">Delete App</a>
+    <a class="btn btn-warning btn-lg btn-primary btn-block" type="button" href="{% url 'app:refresh_app_token' app.id %}">Refresh client_id, secret_key</a>
+    <a class="btn btn-danger btn-lg btn-primary btn-block" type="button" href="{% url 'app:app_delete' app.id %}">Delete App</a>
   </form>
 {% endblock %}

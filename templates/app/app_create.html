@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block form%}
-    <form class="form-signin" method="post" action="{% url 'app_create' %}">
+    <form class="form-signin" method="post" action="{% url 'app:app_create' %}">
     {% csrf_token %}
     <h2 class="form-signin-heading">Create app</h2>
 

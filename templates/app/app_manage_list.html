@@ -12,7 +12,7 @@
 {% block container %}
   <div class="row">
     <div class="col-md-4">
-      <a class="btn btn-info" href="{% url 'app_create' %}" role="button">앱 생성</a>
+      <a class="btn btn-info" href="{% url 'app:app_create' %}" role="button">앱 생성</a>
     </div>
   </div>
   {% for set in app_list %}
@@ -26,8 +26,8 @@
           {% if app.app_url %}
             <p>app_url: {{ app.app_url }}</p>
           {% endif %}
-          <a class="btn btn-default" href="{% url 'app_manage' app.id %}" role="button">정보 수정 »</a>
-          <a class="btn btn-default" href="{% url 'app_manage' app.id %}" role="button">서비스 수정 »</a>
+          <a class="btn btn-default" href="{% url 'app:app_manage' app.id %}" role="button">정보 수정 »</a>
+          <a class="btn btn-default" href="{% url 'app:app_manage' app.id %}" role="button">서비스 수정 »</a>
         </div>
       {% endfor %}
     </div>
