@@ -1,6 +1,6 @@
 from django import forms
 
-from oauth import models
+from oauth_app import models
 
 
 class AppCreateForm(forms.ModelForm):

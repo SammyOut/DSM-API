@@ -1,5 +1,5 @@
 from django.contrib import admin
-from oauth import models
+from oauth_app import models
 
 
 class AppModelAdmin(admin.ModelAdmin):
