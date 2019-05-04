@@ -33,7 +33,7 @@
     </div>
     {% if not user.is_authenticated %}
       <div id="navbar" class="navbar-collapse collapse">
-        <form method="post" action="{% url 'login' %}" class="navbar-form navbar-right">
+        <form method="post" action="{% url 'account:login' %}" class="navbar-form navbar-right">
           {% csrf_token %}
           <div class="form-group">
             <input type="text" placeholder="Username" name="username" class="form-control">
@@ -42,7 +42,7 @@
             <input type="password" placeholder="Password" name="password" class="form-control">
           </div>
           <button type="submit" class="btn btn-success">Log In</button>
-          <a class="btn btn-success" href="{% url 'signup' %}" role="button">Sign Up</a>
+          <a class="btn btn-success" href="{% url 'account:signup' %}" role="button">Sign Up</a>
         </form>
       </div>
     {% else %}
@@ -50,7 +50,7 @@
         <div class="navbar-form navbar-right">
           <p class="btn navbar-username">{{ user.name }}</p>
           <a class="btn btn-info" href="{% url 'app_manage_list' %}" role="button">앱 관리</a>
-          <a class="btn btn-info" href="{% url 'signout' %}" role="button">Sign out</a>
+          <a class="btn btn-info" href="{% url 'account:signout' %}" role="button">Sign out</a>
         </div>
       </div>
     {% endif %}

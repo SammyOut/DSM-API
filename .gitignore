@@ -333,3 +333,5 @@ pyvenv.cfg
 pip-selfcheck.json
 
 # End of https://www.gitignore.io/api/git,macos,django,python,virtualenv,pycharm+all
+
+*/migrations/*
