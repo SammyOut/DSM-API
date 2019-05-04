@@ -1,6 +1,7 @@
 from datetime import datetime
 from uuid import uuid4
 
+from django.conf import settings
 from django.db import models
 
 
@@ -16,7 +17,7 @@ class AppModel(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=256, unique=True)
     description = models.CharField(max_length=1024)
-    owner = models.ForeignKey('account_app.StudentModel', on_delete=models.CASCADE)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     client_id = models.CharField(max_length=256, unique=True, default=get_random_hash)
     secret_key = models.CharField(max_length=256, unique=True, default=get_random_hash)
     app_url = models.CharField(max_length=1024, blank=True)
@@ -28,7 +29,7 @@ class AppModel(models.Model):
 class TokenModel(models.Model):
     token = models.CharField(max_length=256, primary_key=True)
     app = models.ForeignKey(AppModel, on_delete=models.CASCADE)
-    student = models.ForeignKey('account_app.StudentModel', on_delete=models.CASCADE)
+    student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.app.name} {self.student.number}'
@@ -37,7 +38,7 @@ class TokenModel(models.Model):
 class RefreshTokenModel(models.Model):
     refresh_token = models.CharField(max_length=256, primary_key=True)
     app = models.ForeignKey(AppModel, on_delete=models.CASCADE)
-    student = models.ForeignKey('account_app.StudentModel', on_delete=models.CASCADE)
+    student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.app.name} {self.student.number}'
@@ -46,7 +47,7 @@ class RefreshTokenModel(models.Model):
 class AccessTokenModel(models.Model):
     access_token = models.CharField(max_length=256, primary_key=True, unique=True)
     app = models.ForeignKey(AppModel, on_delete=models.CASCADE)
-    student = models.ForeignKey('account_app.StudentModel', on_delete=models.CASCADE)
+    student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     expire_timestamp = models.IntegerField(default=get_timestamp_after_10m)
 
     def __str__(self):
