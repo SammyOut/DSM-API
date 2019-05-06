@@ -12,11 +12,6 @@ from app_app.models import AppModel
 from const import *
 
 from . import models
-import exception
-
-
-def main(request: HttpRequest):
-    return render(request, 'main.html')
 
 
 @csrf_exempt
@@ -33,7 +28,7 @@ def oauth_login(request: HttpRequest):
 
         user = auth.authenticate(username=username, password=password)
         if user is None:
-            return HttpResponseRedirect(reverse('oauth_login'))
+            return HttpResponseRedirect(reverse('oauth:oauth_login'))
 
         token = f'{app.name}_{uuid4().hex}'
         models.TokenModel(
@@ -43,7 +38,7 @@ def oauth_login(request: HttpRequest):
         ).save()
         return HttpResponseRedirect(f'{redirect_url}?code={token}')
     else:
-        return render(request, 'oauth_login.html')
+        return render(request, 'oauth/oauth_login.html')
 
 
 @csrf_exempt
