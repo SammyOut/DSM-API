@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'oauth_app',
     'account_app',
     'app_app',
+    'service_app',
 ]
 
 MIDDLEWARE = [

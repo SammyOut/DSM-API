@@ -25,4 +25,5 @@ urlpatterns = [
     path('account/', include('account_app.urls')),
     path('app/', include('app_app.urls')),
     path('oauth/', include('oauth_app.urls')),
+    path('service/', include('service_app.urls')),
 ]

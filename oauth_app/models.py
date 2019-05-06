@@ -36,18 +36,9 @@ class AccessTokenModel(models.Model):
         return f'{self.app.name} {self.student.number}'
 
 
-class ServiceModel(models.Model):
-    id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=256, unique=True)
-    description = models.CharField(max_length=256)
-
-    def __str__(self):
-        return f'{self.name}'
-
-
 class AppServiceRelModel(models.Model):
     app = models.ForeignKey('app_app.AppModel', on_delete=models.CASCADE)
-    service = models.ForeignKey(ServiceModel, on_delete=models.CASCADE)
+    service = models.ForeignKey('service_app.ServiceModel', on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.app}, {self.service}'

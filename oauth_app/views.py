@@ -5,7 +5,7 @@ from uuid import uuid4
 from django.http import HttpRequest, HttpResponse, JsonResponse, HttpResponseRedirect
 from django.contrib import auth
 from django.shortcuts import render, reverse
-from django.views.generic import ListView
+
 from django.views.decorators.csrf import csrf_exempt
 
 from app_app.models import AppModel
@@ -131,12 +131,3 @@ def get_user_info(request: HttpRequest):
         return HttpResponse(status=405)
 
 
-class ServiceListView(ListView):
-    model = models.ServiceModel
-
-    template_name = 'service_list.html'
-    context_object_name = 'service_list'
-
-    def get_queryset(self):
-        queryset = models.ServiceModel.objects.all()
-        return [queryset[a:a+3] for a in range(0, len(queryset), 3)]
