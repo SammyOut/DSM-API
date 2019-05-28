@@ -17,8 +17,8 @@ from . import models
 @csrf_exempt
 def oauth_login(request: HttpRequest):
     if request.method == POST:
-        client_id = request.POST.get(CLIENT_ID)
-        redirect_url = request.POST.get(REDIRECT_URL)
+        client_id = request.POST.get(CLIENT_ID, None) or request.GET.get(CLIENT_ID, None)
+        redirect_url = request.POST.get(REDIRECT_URL, None) or request.GET.get(REDIRECT_URL, None)
         app = AppModel.objects.get(client_id=client_id)
         if app is None:
             return HttpResponse(status=404)
@@ -28,7 +28,7 @@ def oauth_login(request: HttpRequest):
 
         user = auth.authenticate(username=username, password=password)
         if user is None:
-            return HttpResponseRedirect(reverse('oauth:oauth_login'))
+            return HttpResponseRedirect(reverse('oauth:oauth_login'), status=403)
 
         token = f'{app.name}_{uuid4().hex}'
         models.TokenModel(
